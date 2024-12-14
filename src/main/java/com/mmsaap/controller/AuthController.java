@@ -2,6 +2,7 @@ package com.mmsaap.controller;
 
 
 import com.mmsaap.entity.User;
+import com.mmsaap.payload.JwtToken;
 import com.mmsaap.payload.LoginDto;
 import com.mmsaap.repository.UserRepository;
 import com.mmsaap.service.UserService;
@@ -50,8 +51,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto){
         String token = userService.verifyLogin(loginDto);
+        JwtToken jwtToken = new JwtToken();
+        jwtToken.setToken(token);
+        jwtToken.setType("JWT");
         if(token != null){
-            return new ResponseEntity<>(token,HttpStatus.OK);
+            return new ResponseEntity<>(jwtToken,HttpStatus.OK);
         }
         return new ResponseEntity<>("invalid",HttpStatus.INTERNAL_SERVER_ERROR);
     }
