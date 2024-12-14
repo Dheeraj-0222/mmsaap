@@ -48,12 +48,12 @@ public class AuthController {
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
     @PostMapping("/login")
-    public String login(@RequestBody LoginDto loginDto){
-        boolean val = userService.verifyLogin(loginDto);
-        if(val){
-            return "Login Successful";
+    public ResponseEntity<?> login(@RequestBody LoginDto loginDto){
+        String token = userService.verifyLogin(loginDto);
+        if(token != null){
+            return new ResponseEntity<>(token,HttpStatus.OK);
         }
-        return "bhkkk yaha se";
+        return new ResponseEntity<>("invalid",HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

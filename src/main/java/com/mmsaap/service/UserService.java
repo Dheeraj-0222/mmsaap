@@ -14,24 +14,31 @@ import java.util.Optional;
 @Setter
 @Service
 public class UserService {
-    private  UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final JWTService jwtService;
 
-    public UserService(UserRepository userRepository){
-    this.userRepository = userRepository;
-}
-public boolean verifyLogin(LoginDto loginDto){
+    // Constructor to inject both dependencies
+    public UserService(UserRepository userRepository, JWTService jwtService) {
+        this.userRepository = userRepository;
+        this.jwtService = jwtService;
+    }
+
+
+
+    public String verifyLogin(LoginDto loginDto){
     Optional<User> opUser = userRepository.findByUsername(loginDto.getUsername());
     if(opUser.isPresent()){
         User user = opUser.get();
         if (BCrypt.checkpw(loginDto.getPassword(), user.getPassword())){
-            return true;
+            String token =jwtService.generateToken(user.getUsername());
+            return token;
         }
 
     }else {
-        return false;
+        return null;
 
     }
-    return false;
+    return null;
 }
 
 
