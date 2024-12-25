@@ -27,6 +27,26 @@ public class SequrityConfig {
 
         //haap
         http.authorizeHttpRequests().anyRequest().permitAll();
+
+
+        /*http.authorizeHttpRequests()
+                .requestMatchers("/api/auth/sign-up","/api/auth/login","/api/auth/property/sign-up")
+                .permitAll()
+                .requestMatchers("api/v1/property/addProperty")
+                .hasRole("OWNER")
+                .requestMatchers("api/v1/property/deleteProperty")
+                .hasAnyRole("OWNER","ADMIN")
+                .requestMatchers("/api/auth/blog/sign-up")
+                .hasRole("ADMIN")
+                .anyRequest().authenticated();
+        ;*/
+
+        /*http.authorizeHttpRequests()
+                .requestMatchers("/api/auth/sign-up","/api/auth/login")
+                .permitAll()
+                .requestMatchers("/api/v1/property/addProperty")
+                .hasRole("PROPERTY_OWNER")
+                .anyRequest().authenticated();*/
         return http.build();
     }
 }

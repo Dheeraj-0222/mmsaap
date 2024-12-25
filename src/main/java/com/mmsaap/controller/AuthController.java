@@ -24,6 +24,9 @@ public class AuthController {
         this.userRepository = userRepository;
         this.userService = userService;
     }
+
+    //Used for user sign up
+
     @PostMapping("/sign-up")
     public ResponseEntity<?>createUser(
             @RequestBody User user
@@ -45,9 +48,64 @@ public class AuthController {
 
 
         user.setPassword(BCrypt.hashpw(user.getPassword(),BCrypt.gensalt(10))); // password encryption using BCrypt
+        user.setRole("ROLE_USER");
         User savedUser = userRepository.save(user);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
+
+    @PostMapping("/property/sign-up")
+    public ResponseEntity<?>createPropertyOwnerAccount(
+            @RequestBody User user
+    ){
+        Optional<User> opUsername = userRepository.findByUsername(user.getUsername());
+        if(opUsername.isPresent()){
+            return new ResponseEntity("Username already exists", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        Optional<User> opEmail = userRepository.findByEmail(user.getEmail());
+        if(opEmail.isPresent()){
+            return new ResponseEntity("Email already exists", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        Optional<User> opMobile = userRepository.findByMobile(user.getMobile());
+        if(opMobile.isPresent()){
+            return new ResponseEntity("Mobile already exists", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+
+        user.setPassword(BCrypt.hashpw(user.getPassword(),BCrypt.gensalt(10))); // password encryption using BCrypt
+        user.setRole("ROLE_OWNER");
+        User savedUser = userRepository.save(user);
+        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/blog/sign-up")
+    public ResponseEntity<?>createBlogManagerAccount(
+            @RequestBody User user
+    ){
+        Optional<User> opUsername = userRepository.findByUsername(user.getUsername());
+        if(opUsername.isPresent()){
+            return new ResponseEntity("Username already exists", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        Optional<User> opEmail = userRepository.findByEmail(user.getEmail());
+        if(opEmail.isPresent()){
+            return new ResponseEntity("Email already exists", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        Optional<User> opMobile = userRepository.findByMobile(user.getMobile());
+        if(opMobile.isPresent()){
+            return new ResponseEntity("Mobile already exists", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+
+        user.setPassword(BCrypt.hashpw(user.getPassword(),BCrypt.gensalt(10))); // password encryption using BCrypt
+        user.setRole("ROLE_BLOGMANAGER");
+        User savedUser = userRepository.save(user);
+        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+    }
+
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto){
         String token = userService.verifyLogin(loginDto);
