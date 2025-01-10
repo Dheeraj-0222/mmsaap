@@ -4,10 +4,14 @@ package com.mmsaap.controller;
 import com.mmsaap.entity.User;
 import com.mmsaap.payload.JwtToken;
 import com.mmsaap.payload.LoginDto;
+import com.mmsaap.payload.ProfileDto;
 import com.mmsaap.repository.UserRepository;
 import com.mmsaap.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
@@ -117,5 +121,26 @@ public class AuthController {
         }
         return new ResponseEntity<>("invalid",HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @GetMapping
+    public ResponseEntity<ProfileDto> getUserProfile(
+            //@AuthenticationPrincipal User user
+
+    ){
+        // Get the currently authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) authentication.getPrincipal();  // Assuming principal is a String (username)
+
+        // Retrieve the User object from the database based on the username
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        ProfileDto dto = new ProfileDto();
+        dto.setUsername(user.getUsername());
+        dto.setEmail(user.getEmail());
+        dto.setName(user.getName());
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
 
 }

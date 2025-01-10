@@ -17,7 +17,7 @@ public class Reviews {
     @Column(name = "rating", nullable = false)
     private Integer rating;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 2550)
     private String description;
 
     @ManyToOne
